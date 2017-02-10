@@ -26,7 +26,7 @@ const Lyrics = (props) => {
           <input type="text" value={artistQuery} placeholder="Artist" onChange={artistChange}/>
           <input type="text" value={songQuery} placeholder="Song" onChange={songChange}/>
         </div>
-        <pre>{text || 'Search above!'}</pre>
+        <pre>{props.text || 'Search above!'}</pre>
         <button type="submit">Search for Lyrics</button>
       </form>
     </div>
