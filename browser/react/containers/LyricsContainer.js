@@ -1,7 +1,7 @@
 import React from 'react';
 import {store} from '../store';
 import Lyrics from '../components/Lyrics';
-import {setLyrics} from '../action-creators/lyrics.js';
+import {setLyrics, fetchLyrics} from '../action-creators/lyrics.js';
 import axios from 'axios';
 /*subscribes and dispatches actions to our store, and uses the store's state values.*/
 
@@ -21,8 +21,12 @@ export default class LyricsContainer extends React.Component {
   }
 
   componentDidMount (){
+  //  console.log("LYRICS CONTINER STATES:",  this.state);
+    const container=this;
     this.unsubscribe = store.subscribe(function(){
       console.log('state Changed!!', store.getState())
+      const newLyrics= store.getState().lyrics;
+      container.setState({lyrics: newLyrics});
     })
   }
 
@@ -43,24 +47,26 @@ export default class LyricsContainer extends React.Component {
     let song= this.state.songQuery;
     console.log("artist:" ,artist , " song:", song);
     if(this.state.artistQuery && this.state.songQuery){
-      console.log("submitted:", this.state);
-      axios.get(`/api/lyrics/${artist}/${song}`)
-        .then(res => {
-          console.log("response from ajax jfkla;jfiaw;jfoiwjfoiw");
-          const setLyricsAction= setLyrics(res.data.lyric);
-          store.dispatch(setLyricsAction);
-          console.log("store text state:", store.getState());
-          console.log("this.state", this.state);
+      // console.log("submitted:", this.state);
+      // axios.get(`/api/lyrics/${artist}/${song}`)
+      //   .then(res => {
+      //     const setLyricsAction= setLyrics(res.data.lyric);
+      //     store.dispatch(setLyricsAction);
+      //     console.log("store text state:", store.getState());
+      //
+      //    })
+      //   .catch((error)=> console.log(error));
 
-         })
-        .catch((error)=> console.log(error));
-      }
+      store.dispatch(fetchLyrics(this.state.artistQuery, this.state.songQuery));
+
+
+    }
   }
 
   render() {
     return(
       <Lyrics
-        text={this.state.text}
+        text={this.state.lyrics.text}
         setArtist={this._setArtist}
         setSong={this._setSong}
         artistQuery= {this.state.artistQuery}
